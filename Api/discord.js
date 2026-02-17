@@ -1,4 +1,5 @@
-// File: /api/discord.js
+// Import library node-fetch
+import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
     // Hanya izinkan metode POST
@@ -23,7 +24,7 @@ export default async function handler(req, res) {
     };
 
     try {
-        // Kirim ke Discord dari server-side
+        // Kirim ke Discord dari server-side (sekarang pake fetch yang di-import)
         const discordResponse = await fetch(discordWebhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
