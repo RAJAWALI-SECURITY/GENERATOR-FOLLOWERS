@@ -1,6 +1,7 @@
 {
   "name": "roblox-tools",
   "version": "1.0.0",
+  "type": "module",
   "description": "Tools Generator Followers",
   "main": "index.js",
   "scripts": {
