@@ -1,0 +1,12 @@
+{
+  "name": "roblox-tools",
+  "version": "1.0.0",
+  "description": "Tools Generator Followers",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo 'Error: no start script specified' && exit 1"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
