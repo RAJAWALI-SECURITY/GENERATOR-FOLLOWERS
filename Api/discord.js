@@ -23,21 +23,19 @@ export default async function handler(req, res) {
         avatar_url: "https://i.imgur.com/rVw5B2W.png"
     };
 
-    try {
-        // Kirim ke Discord dari server-side (sekarang pake fetch yang di-import)
-        const discordResponse = await fetch(discordWebhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
+    // !!! PERUBAHAN KRUSIAL DI SINI !!!
+    // Kita nggak pake 'await', jadi nggak nunggu Discord.
+    // Kita jalanin di background.
+    fetch(discordWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    }).catch(error => {
+        // Ini cuma buat log di server, biar kita tau kalau gagal.
+        // Tapi user nggak bakal ngelihat error ini.
+        console.error('Gagal kirim ke Discord (async):', error);
+    });
 
-        if (discordResponse.ok) {
-            res.status(200).json({ message: 'Success' });
-        } else {
-            res.status(500).json({ message: 'Failed to send to Discord' });
-        }
-    } catch (error) {
-        console.error('Error sending to Discord:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
+    // Langsung kirim jawaban SUKSES ke browser, tanpa nunggu!
+    res.status(200).json({ message: 'Success' });
 }
